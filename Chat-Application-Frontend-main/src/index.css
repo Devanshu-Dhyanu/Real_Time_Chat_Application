@@ -1,0 +1,281 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+
+:root {
+  --bg-main: #0c1317;
+  --bg-sidebar: #111b21;
+  --bg-header: #202c33;
+  --bg-chat: #0b141a;
+  --bg-bubble-sent: #003f5c;
+  --bg-bubble-rcvd: #202c33;
+  --text-primary: #e9edef;
+  --text-secondary: #8696a0;
+  --accent-green: #00a884;
+  --online-glow: #00ffb2;
+  --glass: rgba(255, 255, 255, 0.05);
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: 'Inter', sans-serif;
+}
+
+body {
+  background-color: #0c1317;
+  color: var(--text-primary); 
+  height: 100vh;
+  overflow: hidden;
+}
+
+#root {
+  height: 100vh;
+}
+
+/* --- Layout --- */
+.app-container {
+  display: flex;
+  height: 100vh;
+  width: 100vw;
+  background-image: linear-gradient(rgba(12, 19, 23, 0.7), rgba(12, 19, 23, 0.7)),
+    url('https://static.vecteezy.com/system/resources/thumbnails/007/166/590/small/3d-rendering-speech-bubbles-text-replacement-chatting-isolated-on-free-vector.jpg');
+  background-size: cover;
+  background-position: center;
+}
+
+.chat-layout {
+  display: flex;
+  width: 100%;
+  max-width: 1600px;
+  margin: auto;
+  height: 95vh;
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.5);
+  background: var(--bg-main);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+/* --- Sidebar --- */
+.sidebar {
+  flex: 0 0 350px;
+  background: var(--bg-sidebar);
+  border-right: 1px solid rgba(255, 255, 255, 0.1);
+  display: flex;
+  flex-direction: column;
+}
+
+.sidebar-header {
+  padding: 15px;
+  background: var(--bg-header);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.user-item {
+  padding: 12px 15px;
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  cursor: pointer;
+  transition: background 0.2s;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.user-item:hover {
+  background: #202c33;
+}
+
+.user-item.active {
+  background: #2a3942;
+}
+
+.avatar-container {
+  position: relative;
+}
+
+.avatar {
+  width: 45px;
+  height: 45px;
+  border-radius: 50%;
+  background: #6a7175;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: bold;
+}
+
+.status-dot {
+  position: absolute;
+  bottom: 2px;
+  right: 2px;
+  width: 12px;
+  height: 12px;
+  background: var(--text-secondary);
+  border-radius: 50%;
+  border: 2px solid var(--bg-sidebar);
+}
+
+.status-dot.online {
+  background: var(--online-glow);
+  box-shadow: 0 0 8px var(--online-glow);
+}
+
+/* --- Chat Area --- */
+.chat-window {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  background: var(--bg-chat);
+  position: relative;
+}
+
+.chat-window::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-image: url('https://imgs.search.brave.com/lfC0MyklU-UZC2z5ogurcyKc4Wt2Y3kuVL-i8KEG8VI/rs:fit:500:0:1:0/g:ce/aHR0cHM6Ly9tZWRp/YS5pc3RvY2twaG90/by5jb20vaWQvMTMz/NzIyOTk4My9waG90/by9idWJibGUtdGFs/ay1vci1jb21tZW50/LXNpZ24tc3ltYm9s/LW9uLXllbGxvdy1i/YWNrZ3JvdW5kLndl/YnA_YT0xJmI9MSZz/PTYxMng2MTImdz0w/Jms9MjAmYz15VEUy/YU8tM3hsYnNjWnR0/UUsxZFVET1o4ME9D/TFltdU5lNFNaaWtu/X0hrPQ');
+  opacity: 0.06;
+  pointer-events: none;
+}
+
+.chat-header {
+  padding: 10px 20px;
+  background: var(--bg-header);
+  z-index: 10;
+  display: flex;
+  align-items: center;
+  gap: 15px;
+}
+
+.message-list {
+  flex: 1;
+  overflow-y: auto;
+  padding: 20px 7%;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  z-index: 5;
+}
+
+.message-bubble {
+  max-width: 65%;
+  padding: 8px 12px;
+  border-radius: 8px;
+  font-size: 14.5px;
+  line-height: 1.4;
+  position: relative;
+  box-shadow: 0 1px 0.5px rgba(0, 0, 0, 0.13);
+}
+
+.message-sent {
+  align-self: flex-end;
+  background: var(--bg-bubble-sent);
+  border-top-right-radius: 0;
+}
+
+.message-rcvd {
+  align-self: flex-start;
+  background: var(--bg-bubble-rcvd);
+  border-top-left-radius: 0;
+}
+
+.message-time {
+  font-size: 10px;
+  color: rgba(255, 255, 255, 0.5);
+  margin-left: 10px;
+  float: right;
+  margin-top: 5px;
+}
+
+/* --- Input Bar --- */
+.input-area {
+  padding: 10px 15px;
+  background: var(--bg-header);
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  z-index: 10;
+}
+
+.chat-input {
+  flex: 1;
+  background: #2a3942;
+  border: none;
+  padding: 10px 15px;
+  border-radius: 8px;
+  color: white;
+  outline: none;
+}
+
+.send-btn {
+  background: transparent;
+  border: none;
+  color: var(--text-secondary);
+  cursor: pointer;
+  padding: 5px;
+}
+
+.send-btn:hover {
+  color: var(--text-primary);
+}
+
+/* --- Login --- */
+.login-container {
+  height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(rgba(12, 19, 23, 0.85), rgba(12, 19, 23, 0.85)), 
+              url('https://static.vecteezy.com/system/resources/thumbnails/007/166/590/small/3d-rendering-speech-bubbles-text-replacement-chatting-isolated-on-free-vector.jpg');
+  background-size: cover;
+  background-position: center;
+}
+
+.login-card {
+  background: var(--bg-sidebar);
+  padding: 40px;
+  border-radius: 12px;
+  width: 100%;
+  max-width: 400px;
+  text-align: center;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+}
+
+.login-input {
+  width: 100%;
+  padding: 12px;
+  margin: 10px 0;
+  background: #2a3942;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 6px;
+  color: white;
+}
+
+.login-btn {
+  width: 100%;
+  padding: 12px;
+  margin-top: 20px;
+  background: var(--accent-green);
+  border: none;
+  border-radius: 6px;
+  color: white;
+  font-weight: bold;
+  cursor: pointer;
+}
+
+.unread-badge {
+  background: var(--accent-green);
+  color: #0c1317;
+  font-size: 11px;
+  font-weight: 700;
+  min-width: 20px;
+  height: 20px;
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0 6px;
+}
