@@ -7,7 +7,7 @@ export default function ChatPage() {
         <div className="app-container">
             <div className="chat-layout">
                 <UserList />
-                <div style={{ flex: 1, display: 'flex', flexDirection: 'column' }}>
+                <div className="chat-panel-shell">
                     <ChatWindow />
                     <MessageInput />
                 </div>

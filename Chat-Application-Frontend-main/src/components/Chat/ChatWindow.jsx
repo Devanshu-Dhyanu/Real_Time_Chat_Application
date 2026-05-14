@@ -25,10 +25,39 @@ export default function ChatWindow() {
 
   if (!targetUser) {
     return (
-      <div className="chat-window" style={{ display: "flex", alignItems: "center", justifyContent: "center" }}>
-        <div style={{ textAlign: "center", color: "var(--text-secondary)" }}>
-          <h2 style={{ color: "var(--text-primary)" }}>Chat Application</h2>
-          <p>Select a contact, user, or group to start chatting</p>
+      <div className="chat-window chat-window-empty">
+        <div className="empty-stage">
+          <div className="empty-card">
+            <div className="empty-card-illustration">
+              <div className="empty-screen-window">
+                <span className="empty-screen-dot" />
+                <span className="empty-screen-lines" />
+              </div>
+              <div className="empty-phone-window">
+                <span className="empty-phone-dot" />
+                <span className="empty-phone-tail" />
+              </div>
+            </div>
+            <h2>Stay connected on desktop</h2>
+            <p>Pick a chat from the left to read messages, share files, send locations, and keep every conversation synced.</p>
+            <button className="empty-primary-btn" type="button">
+              Open a chat
+            </button>
+          </div>
+          <div className="empty-shortcuts">
+            <div className="empty-shortcut-card">
+              <div className="empty-shortcut-icon">D</div>
+              <span>Send document</span>
+            </div>
+            <div className="empty-shortcut-card">
+              <div className="empty-shortcut-icon">+</div>
+              <span>Add contact</span>
+            </div>
+            <div className="empty-shortcut-card">
+              <div className="empty-shortcut-icon">*</div>
+              <span>Star chats</span>
+            </div>
+          </div>
         </div>
       </div>
     );
@@ -80,7 +109,7 @@ export default function ChatWindow() {
             onClick={() => setShowAppearancePanel((prev) => !prev)}
             title="Themes and wallpaper"
           >
-            Customize
+            Theme
           </button>
         </div>
       </div>
