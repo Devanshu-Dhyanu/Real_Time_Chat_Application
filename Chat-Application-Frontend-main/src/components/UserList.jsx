@@ -229,8 +229,8 @@ export default function UserList() {
       <div className="sidebar">
         <div className="sidebar-header whatsapp-sidebar-header">
           <div>
-            <div className="sidebar-brand">WhatsApp</div>
-            <div className="sidebar-brand-subtitle">{currentUser?.username} signed in</div>
+            <div className="sidebar-brand">Vajra Teams</div>
+            <div className="sidebar-brand-subtitle">Welcome back, {currentUser?.username}</div>
           </div>
           <div className="sidebar-toolbar">
             <button className="header-icon-btn" onClick={handleNewContact} title="New contact">
@@ -325,7 +325,7 @@ export default function UserList() {
           </div>
 
           {filteredContacts.length === 0 ? (
-            <div className="helper-text">Save contacts here, then create WhatsApp-style group chats.</div>
+            <div className="helper-text">Save contacts here to build your Vajra Teams directory and launch group threads faster.</div>
           ) : null}
 
           {filteredContacts.map((contact) =>
