@@ -4,6 +4,7 @@ const API = (import.meta.env.VITE_API_URL || "http://localhost:7000").replace(/\
 
 export const loginApi = (data) => axios.post(`${API}/auth/login`, data);
 export const registerApi = (data) => axios.post(`${API}/auth/register`, data);
+export const googleAuthApi = (data) => axios.post(`${API}/auth/google`, data);
 export const getUsers = (currentUserId) =>
   axios.get(`${API}/auth/list`, { params: { currentUserId } });
 export const getContacts = (userId) => axios.get(`${API}/auth/contacts/${userId}`);

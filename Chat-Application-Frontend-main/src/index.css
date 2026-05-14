@@ -539,6 +539,15 @@ body {
   flex: 0 0 20px;
 }
 
+.google-btn-slot {
+  width: 100%;
+  min-height: 44px;
+}
+
+.google-btn-slot > div {
+  width: 100% !important;
+}
+
 .auth-divider {
   position: relative;
   margin: 18px 0 8px;
@@ -564,6 +573,20 @@ body {
   font-size: 12px;
   text-transform: uppercase;
   letter-spacing: 0.08em;
+}
+
+.auth-inline-note,
+.auth-inline-error {
+  margin-top: 10px;
+  font-size: 12px;
+}
+
+.auth-inline-note {
+  color: var(--text-secondary);
+}
+
+.auth-inline-error {
+  color: #ff8a8a;
 }
 
 .unread-badge {

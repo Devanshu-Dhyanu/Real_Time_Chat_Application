@@ -9,38 +9,32 @@ import { InjectModel } from '@nestjs/mongoose';
 import { Model, Types } from 'mongoose';
 import * as bcrypt from 'bcryptjs';
 import { JwtService } from '@nestjs/jwt';
+import { OAuth2Client } from 'google-auth-library';
 import { User } from '../../schema/user.schema';
 import {
   AddContactDto,
   UpdateContactDto,
+  GoogleAuthDto,
   RegisterDto,
   LoginDto,
 } from '../dto/auth.dto';
 
 @Injectable()
 export class AuthService {
+  private googleClient = new OAuth2Client(process.env.GOOGLE_CLIENT_ID);
+
   constructor(
     @InjectModel(User.name) private userModel: Model<User>,
     private jwtService: JwtService,
   ) {}
 
-  async login(dto: LoginDto) {
-    const normalizedEmail = dto.email.trim().toLowerCase();
-    const user = await this.userModel.findOne({ email: normalizedEmail });
-    if (!user) {
-      throw new UnauthorizedException('Invalid credentials');
-    }
-
-    const isMatch = await bcrypt.compare(dto.password, user.password);
-    if (!isMatch) {
-      throw new UnauthorizedException('Invalid credentials');
-    }
-
+  private async buildAuthResponse(user: any) {
     const payload = {
       sub: user._id,
       email: user.email,
       username: user.username,
     };
+
     return {
       access_token: await this.jwtService.sign(payload),
       user: {
@@ -51,6 +45,43 @@ export class AuthService {
         avatarUrl: user.avatarUrl,
       },
     };
+  }
+
+  private async generateUniqueUsername(baseValue: string) {
+    const sanitizedBase =
+      baseValue
+        .toLowerCase()
+        .replace(/[^a-z0-9]+/g, '')
+        .slice(0, 18) || 'chatuser';
+
+    let candidate = sanitizedBase;
+    let counter = 0;
+
+    while (await this.userModel.exists({ username: candidate })) {
+      counter += 1;
+      candidate = `${sanitizedBase}${counter}`;
+    }
+
+    return candidate;
+  }
+
+  async login(dto: LoginDto) {
+    const normalizedEmail = dto.email.trim().toLowerCase();
+    const user = await this.userModel.findOne({ email: normalizedEmail });
+    if (!user) {
+      throw new UnauthorizedException('Invalid credentials');
+    }
+
+    if (!user.password) {
+      throw new UnauthorizedException('Use Continue with Google for this account.');
+    }
+
+    const isMatch = await bcrypt.compare(dto.password, user.password);
+    if (!isMatch) {
+      throw new UnauthorizedException('Invalid credentials');
+    }
+
+    return this.buildAuthResponse(user);
   }
 
   async register(dto: RegisterDto) {
@@ -71,6 +102,61 @@ export class AuthService {
     });
     const { password, ...result } = user.toObject();
     return result;
+  }
+
+  async googleAuth(dto: GoogleAuthDto) {
+    if (!process.env.GOOGLE_CLIENT_ID) {
+      throw new UnauthorizedException('Google sign-in is not configured.');
+    }
+
+    const ticket = await this.googleClient.verifyIdToken({
+      idToken: dto.credential,
+      audience: process.env.GOOGLE_CLIENT_ID,
+    });
+
+    const payload = ticket.getPayload();
+    if (!payload?.sub || !payload.email) {
+      throw new UnauthorizedException('Google sign-in failed.');
+    }
+
+    const normalizedEmail = payload.email.trim().toLowerCase();
+    let user = await this.userModel.findOne({
+      $or: [{ googleId: payload.sub }, { email: normalizedEmail }],
+    });
+
+    if (!user) {
+      const username = await this.generateUniqueUsername(
+        payload.name || normalizedEmail.split('@')[0],
+      );
+      const randomPassword = await bcrypt.hash(`${payload.sub}:${normalizedEmail}`, 10);
+
+      user = await this.userModel.create({
+        username,
+        email: normalizedEmail,
+        password: randomPassword,
+        googleId: payload.sub,
+        avatarUrl: payload.picture,
+        contacts: [],
+      });
+    } else {
+      let shouldSave = false;
+
+      if (!user.googleId) {
+        user.googleId = payload.sub;
+        shouldSave = true;
+      }
+
+      if (payload.picture && user.avatarUrl !== payload.picture) {
+        user.avatarUrl = payload.picture;
+        shouldSave = true;
+      }
+
+      if (shouldSave) {
+        await user.save();
+      }
+    }
+
+    return this.buildAuthResponse(user);
   }
 
   async getProfile(userId: string) {

@@ -12,6 +12,9 @@ export class  User {
   @Prop({ required: true})
   password: string;
 
+  @Prop({ unique: true, sparse: true, trim: true })
+  googleId: string;
+
   @Prop()
   publicKey: string;
 

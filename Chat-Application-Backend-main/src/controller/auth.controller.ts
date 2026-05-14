@@ -15,6 +15,7 @@ import {
   UpdateContactDto,
   UpdateProfilePhotoDto,
   UpdatePublicKeyDto,
+  GoogleAuthDto,
   RegisterDto,
   LoginDto,
 } from '../dto/auth.dto';
@@ -31,6 +32,11 @@ export class AuthController {
   @Post('login')
   async login(@Body(ValidationPipe) dto: LoginDto) {
     return this.authService.login(dto);
+  }
+
+  @Post('google')
+  async googleAuth(@Body(ValidationPipe) dto: GoogleAuthDto) {
+    return this.authService.googleAuth(dto);
   }
 
   @Get('profile/:userId')
