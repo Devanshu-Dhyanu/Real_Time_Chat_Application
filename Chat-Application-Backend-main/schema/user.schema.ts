@@ -1,4 +1,5 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
+import { Types } from 'mongoose';
 
 @Schema({ timestamps: true })
 export class  User {
@@ -12,6 +13,9 @@ export class  User {
   password: string;
 
   @Prop()
+  publicKey: string;
+
+  @Prop()
   avatarUrl: string;
 
   @Prop({ default: false })
@@ -22,6 +26,24 @@ export class  User {
 
   @Prop({default:false})
   isDeleted:boolean
+
+  @Prop({
+    type: [
+      {
+        userId: { type: Types.ObjectId, ref: 'User' },
+        email: { type: String, required: true, trim: true, lowercase: true },
+        displayName: { type: String, trim: true },
+        createdAt: { type: Date, default: Date.now },
+      },
+    ],
+    default: [],
+  })
+  contacts: {
+    userId: Types.ObjectId;
+    email: string;
+    displayName?: string;
+    createdAt?: Date;
+  }[];
 }
 
 export const userModel = SchemaFactory.createForClass(User);

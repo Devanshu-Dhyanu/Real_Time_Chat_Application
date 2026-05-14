@@ -17,6 +17,8 @@ export default function LoginPage({ onSwitchToRegister }) {
         } catch (err) {
             alert("Login failed. Please check your credentials.");
             console.log(err);
+        } finally {
+            setLoading(false);
         }
     };
 

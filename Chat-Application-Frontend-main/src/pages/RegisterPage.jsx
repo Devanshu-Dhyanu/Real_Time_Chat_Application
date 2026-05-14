@@ -13,12 +13,19 @@ export default function RegisterPage({ onSwitchToLogin }) {
         setLoading(true);
         setError("");
         try {
-            const res = await registerApi({ email, username, password });
+            await registerApi({ email, username, password });
             alert("Registration successful! Please login.");
             onSwitchToLogin();
         } catch (err) {
-            setError(err.response?.data?.message || "Registration failed. Email or username might be taken.");
+            const message =
+                err.response?.data?.message ||
+                (err.request
+                    ? "Backend server is not reachable. Please make sure the backend is running on port 7000."
+                    : "Registration failed. Please try again.");
+            setError(message);
             console.log(err);
+        } finally {
+            setLoading(false);
         }
     };
 

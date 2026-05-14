@@ -9,6 +9,9 @@ export class Conversation {
   @Prop()
   name: string;
 
+  @Prop()
+  avatarUrl: string;
+
   @Prop({ type: [{ type: Types.ObjectId, ref: 'User' }] })
   participants: Types.ObjectId[];
 
