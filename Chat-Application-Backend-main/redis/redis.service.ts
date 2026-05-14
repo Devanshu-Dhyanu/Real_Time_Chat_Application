@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import Redis from 'ioredis';
+import Redis, { RedisOptions } from 'ioredis';
 
 @Injectable()
 export class RedisService {
@@ -7,14 +7,19 @@ export class RedisService {
   public subClient: Redis;
 
   constructor() {
-    this.pubClient = new Redis({
-      host: process.env.REDIS_HOST,
-      port: Number(process.env.REDIS_PORT),
-    });
+    const redisUrl = process.env.REDIS_URL;
+    const tlsEnabled =
+      process.env.REDIS_TLS === 'true' || redisUrl?.startsWith('rediss://');
 
-    this.subClient = new Redis({
+    const redisOptions: RedisOptions = {
       host: process.env.REDIS_HOST,
       port: Number(process.env.REDIS_PORT),
-    });
+      username: process.env.REDIS_USERNAME,
+      password: process.env.REDIS_PASSWORD,
+      ...(tlsEnabled ? { tls: {} } : {}),
+    };
+
+    this.pubClient = redisUrl ? new Redis(redisUrl) : new Redis(redisOptions);
+    this.subClient = redisUrl ? new Redis(redisUrl) : new Redis(redisOptions);
   }
 }
