@@ -38,10 +38,10 @@ export default function ChatWindow() {
                 <span className="empty-phone-tail" />
               </div>
             </div>
-            <h2>Stay connected on desktop</h2>
-            <p>Pick a chat from the left to read messages, share files, send locations, and keep every conversation synced.</p>
+            <h2>Welcome to Vajra Teams</h2>
+            <p>Open any thread from the left to reply instantly, share files, send live locations, and keep every conversation in sync.</p>
             <button className="empty-primary-btn" type="button">
-              Open a chat
+              Choose a conversation
             </button>
           </div>
           <div className="empty-shortcuts">
@@ -55,7 +55,7 @@ export default function ChatWindow() {
             </div>
             <div className="empty-shortcut-card">
               <div className="empty-shortcut-icon">*</div>
-              <span>Star chats</span>
+              <span>Pin favorites</span>
             </div>
           </div>
         </div>
